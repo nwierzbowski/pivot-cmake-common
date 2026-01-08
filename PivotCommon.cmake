@@ -139,6 +139,7 @@ macro(_pivot_setup_boost)
             add_library(boost_json_objects OBJECT ${BOOST_JSON_SRCS})
             target_include_directories(boost_json_objects PRIVATE ${boost_ext_SOURCE_DIR})
             target_compile_features(boost_json_objects PRIVATE cxx_std_17)
+            set_target_properties(boost_json_objects PROPERTIES POSITION_INDEPENDENT_CODE ON)
             if(MSVC)
                 target_compile_definitions(boost_json_objects PRIVATE BOOST_ALL_NO_LIB BOOST_INTERPROCESS_NO_LIB)
             endif()
@@ -165,6 +166,17 @@ function(_pivot_apply_shm_bridge_overrides target_name)
         elseif(boost_ext_POPULATED)
             target_include_directories(${target_name} PRIVATE ${boost_ext_SOURCE_DIR})
         endif()
+    endif()
+endfunction()
+
+function(_pivot_apply_elbo_sdk_engine_overrides target_name)
+    # When building elbo-sdk's Python module, keep the Cython layer thin by linking
+    # the module against the native C++ engine client.
+    if(target_name STREQUAL "engine" AND TARGET elbo_sdk_cpp)
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+            target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+        endif()
+        target_link_libraries(${target_name} PRIVATE elbo_sdk_cpp)
     endif()
 endfunction()
 
@@ -219,6 +231,7 @@ macro(_pivot_add_cython_modules MODULE_SOURCES WHEEL_PKG_DIR WHEEL_OUTPUT_DIR)
             add_library(${mod} MODULE ${OUT})
 
             _pivot_apply_shm_bridge_overrides(${mod})
+            _pivot_apply_elbo_sdk_engine_overrides(${mod})
 
             set_target_properties(${mod} PROPERTIES PREFIX "")
             if(WIN32)
