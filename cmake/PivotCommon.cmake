@@ -1,0 +1,9 @@
+include_guard(GLOBAL)
+
+include("${CMAKE_CURRENT_LIST_DIR}/PivotTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotPlatform.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotDirs.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotBoost.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotEigen.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotIPO.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PivotInstall.cmake")
