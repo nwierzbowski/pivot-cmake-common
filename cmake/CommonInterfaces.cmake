@@ -1,10 +1,13 @@
 include_guard(GLOBAL)
 
-function(pivot_common_define_targets)
+function(setup_common_interfaces)
+
+    # Run only once
     if(TARGET pivot_common::warnings)
         return()
     endif()
 
+    # Cpp warnings
     add_library(pivot_common_warnings INTERFACE)
     add_library(pivot_common::warnings ALIAS pivot_common_warnings)
     if(MSVC)
@@ -13,10 +16,12 @@ function(pivot_common_define_targets)
         target_compile_options(pivot_common_warnings INTERFACE -Wall -Wextra -pedantic)
     endif()
 
+    # C++20 standard
     add_library(pivot_common_cxx20 INTERFACE)
     add_library(pivot_common::cxx20 ALIAS pivot_common_cxx20)
     target_compile_features(pivot_common_cxx20 INTERFACE cxx_std_20)
 
+    # MSVC no autolink to stop boost from trying to link libs itself
     add_library(pivot_common_msvc_no_autolib INTERFACE)
     add_library(pivot_common::msvc_no_autolib ALIAS pivot_common_msvc_no_autolib)
     if(MSVC)
