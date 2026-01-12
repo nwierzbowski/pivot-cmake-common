@@ -110,4 +110,12 @@ function(setup_common_interfaces)
         pivot_common::cxx20
         pivot_common::runtime_static
     )
+
+    add_library(pivot_base_cython INTERFACE)
+    add_library(pivot_common::base_cython ALIAS pivot_base_cython)
+    target_link_libraries(pivot_base_cython INTERFACE
+        pivot_common::platform 
+        pivot_common::cxx20
+        pivot_common::runtime_static
+    )
 endfunction()
