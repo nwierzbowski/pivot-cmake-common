@@ -19,6 +19,10 @@ function(setup_common_toolchain)
         # Set minimum macOS deployment target for compatibility
         set(CACHE{CMAKE_OSX_DEPLOYMENT_TARGET} TYPE STRING FORCE VALUE "10.15")
     endif()
+
+    # Enable Position Independent Code globally for security and shared library compatibility
+    set(CACHE{CMAKE_POSITION_INDEPENDENT_CODE} TYPE BOOL FORCE VALUE TRUE)
+
     set_property(GLOBAL PROPERTY PIVOT_GLOBAL_CACHE_SETUP_DONE TRUE)
 endfunction()
 
