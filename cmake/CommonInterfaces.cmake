@@ -104,6 +104,23 @@ function(setup_common_interfaces)
         endif()
     endif()
 
+    # 6. SIMD & Math Optimization Target
+
+
+    add_library(pivot_simd INTERFACE)
+    add_library(pivot_common::simd ALIAS pivot_simd)
+
+    if (MSVC)
+        target_compile_options(pivot_simd INTERFACE /arch:AVX2 /Ot /Oi /Gy)
+    else()
+        target_compile_options(pivot_simd INTERFACE -mavx2 -mfma -O3)
+    endif()
+
+    target_compile_definitions(pivot_simd INTERFACE 
+        $<$<NOT:$<CONFIG:Debug>>:EIGEN_NO_DEBUG>
+        $<$<NOT:$<CONFIG:Debug>>:NDEBUG>
+    )
+
     # 5. Master Base Target
     # Combines all common settings into one convenient target
     add_library(pivot_base INTERFACE)
@@ -113,6 +130,7 @@ function(setup_common_interfaces)
         pivot_common::warnings 
         pivot_common::cxx20
         pivot_common::runtime_static
+        pivot_common::simd
     )
 
     add_library(pivot_base_cython INTERFACE)
@@ -121,5 +139,6 @@ function(setup_common_interfaces)
         pivot_common::platform 
         pivot_common::cxx20
         pivot_common::runtime_static
+        pivot_common::simd
     )
 endfunction()
